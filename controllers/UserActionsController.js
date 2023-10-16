@@ -1,6 +1,10 @@
 import User from '../models/user';
 import bcrypt from 'bcrypt';
 
+const validatePassword = (password) => {
+    return password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
+};
+
 export const registerUser = async (req, res) => {
     const { name, email, password, confirmPassword } = req.body;
 
@@ -11,7 +15,7 @@ export const registerUser = async (req, res) => {
     }
 
     // Validations
-    if (!password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)) {
+    if (!validatePassword(password)) {
         return res.status(400).send('Password must have at least one uppercase letter, one lowercase letter, one number, and one special character, and be at least 8 characters long.');
     }
 
@@ -46,8 +50,7 @@ export const loginUser = async (req, res) => {
             return res.status(400).send('Invalid email or password.');
         }
 
-        // If all is good, handle login (e.g., create a session, return a JWT, etc.)
-        // For demonstration, we'll just send a success message.
+        // TODO: Handle login (e.g., create a session, return a JWT, etc.)
         res.send({ message: 'Logged in successfully!' });
     } catch (error) {
         res.status(500).send({ message: 'Server Error.' });
